@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RestraintLayout
+    id="@+id/rl_dexar_root"
+    width="fill"
+    height="fill">
+
+    <!-- 第一行 -->
+    <TextView
+        id="@+id/tv_dexar_file_path"
+        width="fill"
+        height="auto"
+        padding="4dp"
+        text=""
+        is_editable="true"
+        is_selectable="true"
+        margin="12, 0, 12, 0"
+        handle_start="@id/rl_dexar_root"
+        handle_end="@id/bt_dexar_browser_button, start"
+        handle_top="@id/bt_dexar_browser_button"
+        handle_bottom="@id/bt_dexar_browser_button" />
+
+    <Button
+        id="@+id/bt_dexar_browser_button"
+        width="auto"
+        height="auto"
+        margin="12dp"
+        text="浏览"
+        handle_end="@id/bt_dexar_parse_button, start"
+        handle_top="@id/rl_dexar_root" />
+
+    <Button
+        id="@+id/bt_dexar_parse_button"
+        width="auto"
+        height="auto"
+        margin="12dp"
+        text="解析"
+        handle_end="@id/rl_dexar_root"
+        handle_top="@id/rl_dexar_root" />
+
+    <!-- 第二行 -->
+    <Button
+        id="@+id/bt_dexar_continue_button"
+        width="auto"
+        height="auto"
+        margin="12dp"
+        text="继续"
+        handle_start="@id/rl_dexar_root"
+        handle_top="@id/tv_dexar_file_path, bottom" />
+
+    <!-- 第三行 -->
+    <ListView
+        id="@+id/lv_dexar_info_list"
+        width="fill"
+        height="fill"
+        margin="8, 8, 8, 8"
+        handle_start="@id/rl_dexar_root"
+        handle_top="@id/bt_dexar_continue_button, bottom"
+        handle_end="@id/rl_dexar_root"
+        handle_bottom="@id/rl_dexar_root" />
+
+</RestraintLayout>

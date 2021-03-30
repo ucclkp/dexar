@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ui\dexar_window.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\opcode_list_source.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ui">
+      <UniqueIdentifier>{e17e5fe0-681e-4630-8642-95b5eb886fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{ed1f8d03-5b57-4381-8714-255f2a5a2e2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\layout">
+      <UniqueIdentifier>{c744b8bd-76e9-40cc-a9cf-630a82d3f252}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ui\dexar_window.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\opcode_list_source.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="resources\layout\dexar_layout.xml">
+      <Filter>resources\layout</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="application.manifest" />
+  </ItemGroup>
+</Project>

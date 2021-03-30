@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="code_data_provider.cpp" />
+    <ClCompile Include="debugger.cpp" />
+    <ClCompile Include="pe\pe_parser.cpp">
+      <Filter>pe</Filter>
+    </ClCompile>
+    <ClCompile Include="pe\sections\edata_section.cpp">
+      <Filter>pe\sections</Filter>
+    </ClCompile>
+    <ClCompile Include="pe\sections\idata_section.cpp">
+      <Filter>pe\sections</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\intel_instruction.cpp">
+      <Filter>intel</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\intel_operand.cpp">
+      <Filter>intel</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\intel_prefix.cpp">
+      <Filter>intel</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\intel_instruction_params.cpp">
+      <Filter>intel</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\intel_opcode_map.cpp">
+      <Filter>intel</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\intel_instruction_parser.cpp">
+      <Filter>intel</Filter>
+    </ClCompile>
+    <ClCompile Include="intel\code_segment.cpp">
+      <Filter>intel</Filter>
+    </ClCompile>
+    <ClCompile Include="pe\sections\rsrc_section.cpp">
+      <Filter>pe\sections</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="code_data_provider.h" />
+    <ClInclude Include="debugger.h" />
+    <ClInclude Include="pe\pe_parser.h">
+      <Filter>pe</Filter>
+    </ClInclude>
+    <ClInclude Include="pe\pe_data_types.h">
+      <Filter>pe</Filter>
+    </ClInclude>
+    <ClInclude Include="pe\sections\edata_section.h">
+      <Filter>pe\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="pe\sections\idata_section.h">
+      <Filter>pe\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="intel\intel_instruction.h">
+      <Filter>intel</Filter>
+    </ClInclude>
+    <ClInclude Include="intel\intel_operand.h">
+      <Filter>intel</Filter>
+    </ClInclude>
+    <ClInclude Include="intel\intel_prefix.h">
+      <Filter>intel</Filter>
+    </ClInclude>
+    <ClInclude Include="intel\intel_instruction_params.h">
+      <Filter>intel</Filter>
+    </ClInclude>
+    <ClInclude Include="intel\intel_opcode_map.h">
+      <Filter>intel</Filter>
+    </ClInclude>
+    <ClInclude Include="intel\intel_instruction_parser.h">
+      <Filter>intel</Filter>
+    </ClInclude>
+    <ClInclude Include="intel\code_segment.h">
+      <Filter>intel</Filter>
+    </ClInclude>
+    <ClInclude Include="pe\sections\rsrc_section.h">
+      <Filter>pe\sections</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="pe">
+      <UniqueIdentifier>{db3d2f61-d792-414c-81e4-4df60457d818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pe\sections">
+      <UniqueIdentifier>{36d31edf-1f12-414d-bc8c-06d1a74abd00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="intel">
+      <UniqueIdentifier>{d60a63af-012c-42be-a80d-7afb963ca666}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
