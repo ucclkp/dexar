@@ -11,6 +11,7 @@
 
 #include "ukive/views/list/list_item.h"
 #include "ukive/views/list/list_source.h"
+#include "ukive/views/view.h"
 
 
 namespace ukive {
@@ -53,9 +54,13 @@ namespace dexar {
 
     protected:
         // ukive::ListSource
-        ukive::ListItem* onListCreateItem(ukive::LayoutView* parent, int position) override;
-        void onListSetItemData(ukive::ListItem* item, int position) override;
-        int onListGetDataCount() override;
+        ukive::ListItem* onCreateListItem(
+            ukive::LayoutView* parent, ukive::ListItemEventRouter* router,
+            size_t position) override;
+        void onSetListItemData(
+            ukive::LayoutView* parent, ukive::ListItemEventRouter* router,
+            ukive::ListItem* item) override;
+        size_t onGetListDataCount(ukive::LayoutView* parent) const override;
 
     private:
         std::vector<BindData> data_;

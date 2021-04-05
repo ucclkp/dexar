@@ -6,8 +6,6 @@
 
 #include "dexar-test/ui/opcode_list_source.h"
 
-#include "utils/number.hpp"
-
 #include "ukive/views/layout/restraint_layout.h"
 #include "ukive/views/layout_info/restraint_layout_info.h"
 #include "ukive/views/text_view.h"
@@ -32,8 +30,8 @@ namespace dexar {
         notifyDataChanged();
     }
 
-    ukive::ListItem* OpcodeListSource::onListCreateItem(
-        ukive::LayoutView* parent, int position)
+    ukive::ListItem* OpcodeListSource::onCreateListItem(
+        ukive::LayoutView* parent, ukive::ListItemEventRouter* router, size_t position)
     {
         using Rlp = ukive::RestraintLayoutInfo;
         auto layout = new ukive::RestraintLayout(parent->getContext());
@@ -63,14 +61,17 @@ namespace dexar {
         return new OpcodeListItem(layout);
     }
 
-    void OpcodeListSource::onListSetItemData(ukive::ListItem* item, int position) {
+    void OpcodeListSource::onSetListItemData(
+        ukive::LayoutView* parent, ukive::ListItemEventRouter* router,
+        ukive::ListItem* item)
+    {
         auto op_item = reinterpret_cast<OpcodeListItem*>(item);
-        op_item->addr_tv->setText(data_[position].addr);
-        op_item->opcode_tv->setText(data_[position].opcode);
+        op_item->addr_tv->setText(data_[item->data_pos].addr);
+        op_item->opcode_tv->setText(data_[item->data_pos].opcode);
     }
 
-    int OpcodeListSource::onListGetDataCount() {
-        return utl::num_cast<int>(data_.size());
+    size_t OpcodeListSource::onGetListDataCount(ukive::LayoutView* parent) const {
+        return data_.size();
     }
 
 }
