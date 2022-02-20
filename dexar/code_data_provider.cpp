@@ -44,7 +44,7 @@ namespace dexar {
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 1, &read_byte_count);
         if (ret == 0 || read_byte_count != 1) {
-            DCHECK(false);
+            ubassert(false);
             return 0;
         }
         return dat;
@@ -56,7 +56,7 @@ namespace dexar {
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 2, &read_byte_count);
         if (ret == 0 || read_byte_count != 2) {
-            DCHECK(false);
+            ubassert(false);
             return 0;
         }
         return dat;
@@ -68,7 +68,7 @@ namespace dexar {
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 4, &read_byte_count);
         if (ret == 0 || read_byte_count != 4) {
-            DCHECK(false);
+            ubassert(false);
             return 0;
         }
         return dat;
@@ -80,7 +80,7 @@ namespace dexar {
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 8, &read_byte_count);
         if (ret == 0 || read_byte_count != 8) {
-            DCHECK(false);
+            ubassert(false);
             return 0;
         }
         return dat;

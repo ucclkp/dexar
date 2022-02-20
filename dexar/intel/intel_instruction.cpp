@@ -6,7 +6,7 @@
 
 #include "dexar/intel/intel_instruction.h"
 
-#include "utils/convert.h"
+#include "utils/strings/int_conv.hpp"
 
 
 namespace dexar {
@@ -62,7 +62,7 @@ namespace intel {
         std::string cur_operand;
         for (const auto& op : operands) {
             if (op.is_digit) {
-                cur_operand = utl::toString8Hex(op.digit);
+                cur_operand = utl::itos8(op.digit, 16);
             } else if (op.use_modrm) {
                 if (op.modrm_field.is_reg) {
                     cur_operand = op.modrm_field.selected_reg;
@@ -92,7 +92,7 @@ namespace intel {
                                 cur_operand.append("+");
                             }
                             cur_operand.append(sib_scale.reg)
-                                .append("*").append(utl::toString8Hex(sib_scale.scale));
+                                .append("*").append(utl::itos8(sib_scale.scale, 16));
                             has_prefix = true;
                         }
                         if (sib_base.disp_length > 0) {
@@ -150,19 +150,19 @@ namespace intel {
                 cur_operand.append(getSegmentReg("DS"));
                 cur_operand.append(":");
                 cur_operand.append("[");
-                cur_operand.append(utl::toString8Hex(op.disp));
+                cur_operand.append(utl::itos8(op.disp, 16));
                 cur_operand.append("]");
             } else if (op.is_pointer) {
                 if (op.is_mem_pointer) {
-                    cur_operand.append(utl::toString8Hex(op.pointer_seg));
+                    cur_operand.append(utl::itos8(op.pointer_seg, 16));
                     cur_operand.append(":");
                     cur_operand.append("[");
-                    cur_operand.append(utl::toString8Hex(op.pointer_addr));
+                    cur_operand.append(utl::itos8(op.pointer_addr, 16));
                     cur_operand.append("]");
                 } else {
-                    cur_operand.append(utl::toString8Hex(op.pointer_seg));
+                    cur_operand.append(utl::itos8(op.pointer_seg, 16));
                     cur_operand.append(":");
-                    cur_operand.append(utl::toString8Hex(op.pointer_addr));
+                    cur_operand.append(utl::itos8(op.pointer_addr, 16));
                 }
             }
 
@@ -187,40 +187,40 @@ namespace intel {
         if (length == 1) {
             if (!(disp & 0x80)) {
                 if (has_prefix) result.append("+");
-                result.append(utl::toString8Hex(disp));
+                result.append(utl::itos8(disp, 16));
             } else {
                 result.append("-");
-                result.append(utl::toString8Hex(0xFFU - disp + 1U));
+                result.append(utl::itos8(0xFFU - disp + 1U, 16));
             }
             return result;
         }
         if (length == 2) {
             if (!(disp & 0x8000)) {
                 if (has_prefix) result.append("+");
-                result.append(utl::toString8Hex(disp));
+                result.append(utl::itos8(disp, 16));
             } else {
                 result.append("-");
-                result.append(utl::toString8Hex(0xFFFFU - disp + 1U));
+                result.append(utl::itos8(0xFFFFU - disp + 1U, 16));
             }
             return result;
         }
         if (length == 4) {
             if (!(disp & 0x80000000)) {
                 if (has_prefix) result.append("+");
-                result.append(utl::toString8Hex(disp));
+                result.append(utl::itos8(disp, 16));
             } else {
                 result.append("-");
-                result.append(utl::toString8Hex(0xFFFFFFFFU - disp + 1U));
+                result.append(utl::itos8(0xFFFFFFFFU - disp + 1U, 16));
             }
             return result;
         }
         if (length == 8) {
             if (!(disp & 0x8000000000000000)) {
                 if (has_prefix) result.append("+");
-                result.append(utl::toString8Hex(disp));
+                result.append(utl::itos8(disp, 16));
             } else {
                 result.append("-");
-                result.append(utl::toString8Hex(0xFFFFFFFFFFFFFFFFU - disp + 1U));
+                result.append(utl::itos8(0xFFFFFFFFFFFFFFFFU - disp + 1U, 16));
             }
             return result;
         }

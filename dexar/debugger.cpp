@@ -11,11 +11,10 @@
 #include <filesystem>
 
 #include "utils/log.h"
-#include "utils/convert.h"
 #include "utils/message/cycler.h"
 #include "utils/message/message_pump.h"
 #include "utils/message/message.h"
-#include "utils/number.hpp"
+#include "utils/numbers.hpp"
 
 
 namespace dexar {
@@ -40,12 +39,12 @@ namespace dexar {
         }
     }
 
-    void Debugger::create(const std::u16string& name) {
+    void Debugger::create(const std::u16string_view& name) {
         is_running_ = true;
-        debugger_thread_ = std::thread(&Debugger::run, this, name);
+        debugger_thread_ = std::thread(&Debugger::run, this, std::u16string(name));
     }
 
-    void Debugger::attach(const std::u16string& name) {
+    void Debugger::attach(const std::u16string_view& name) {
     }
 
     void Debugger::resume() {
@@ -155,7 +154,7 @@ namespace dexar {
                 break;
 
             default:
-                DCHECK(false);
+                ubassert(false);
                 break;
             }
 
@@ -304,12 +303,12 @@ namespace dexar {
 
         std::ifstream file(std::filesystem::path(image_file_name_), std::ios::binary);
         if (!file) {
-            LOG(Log::ERR) << "Cannot open file: " << utl::UTF16ToUTF8(image_file_name_);
+            jour_e("Cannot open file: %s", image_file_name_);
             return;
         }
 
         if (!pe_parser_.parse(file)) {
-            LOG(Log::ERR) << "Cannot parse file: " << utl::UTF16ToUTF8(image_file_name_);
+            jour_e("Cannot parse file: %s", image_file_name_);
             return;
         }
 
@@ -317,12 +316,12 @@ namespace dexar {
         auto& opt = pe_parser_.getOptHeaderStd();
         if (opt.magic == pe::OptionalHeaderMagic::PE32) {
             if (coff.machine != pe::MachineType::I386) {
-                LOG(Log::ERR) << "Cannot parse file: " << utl::UTF16ToUTF8(image_file_name_);
+                jour_e("Cannot parse file: %s", image_file_name_);
                 return;
             }
         } else {
             if (coff.machine != pe::MachineType::AMD64) {
-                LOG(Log::ERR) << "Cannot parse file: " << utl::UTF16ToUTF8(image_file_name_);
+                jour_e("Cannot parse file: %s", image_file_name_);
                 return;
             }
         }
@@ -345,7 +344,7 @@ namespace dexar {
         }
 
         if (!hit) {
-            LOG(Log::ERR) << "Cannot find EP section: " << utl::UTF16ToUTF8(image_file_name_);
+            jour_e("Cannot find EP section: %s", image_file_name_);
             return;
         }
 
@@ -446,9 +445,9 @@ namespace dexar {
         }
         --read_count;
 
-        auto str = ANSIToUTF16(
+        auto str = ANSIToW(
             std::string(reinterpret_cast<char*>(buffer.get()), read_count));
-        LOG(Log::INFO) << "Debugger::onOutputDebugString " << utl::UTF16ToUTF8(str);
+        jour_i("Debugger::onOutputDebugString %s", str);
     }
 
     void Debugger::onRIPEvent(const RIP_INFO& info) {
@@ -502,7 +501,7 @@ namespace dexar {
     }
 
 
-    std::u16string Debugger::ANSIToUTF16(const std::string& str) {
+    std::wstring Debugger::ANSIToW(const std::string& str) {
         int req_length = ::MultiByteToWideChar(
             CP_ACP, MB_PRECOMPOSED, str.data(), utl::num_cast<int>(str.length()), nullptr, 0);
         if (req_length <= 0) {
@@ -518,7 +517,7 @@ namespace dexar {
             return {};
         }
 
-        return std::u16string(reinterpret_cast<char16_t*>(w_buffer.get()), req_length);
+        return std::wstring(w_buffer.get(), req_length);
     }
 
 

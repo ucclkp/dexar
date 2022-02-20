@@ -7,7 +7,7 @@
 #include "dexar/intel/intel_instruction_parser.h"
 
 #include "utils/log.h"
-#include "utils/string_utils.h"
+#include "utils/strings/string_utils.hpp"
 
 #include "dexar/intel/intel_opcode_map.h"
 #include "dexar/intel/intel_instruction.h"
@@ -15,7 +15,7 @@
 
 #define RETURN_FAILED_IF(x) \
     if (x) {                \
-        DCHECK(false);      \
+        ubassert(false);      \
         return false;       \
     }
 
@@ -168,7 +168,7 @@ namespace intel {
     }
 
     bool InstructionParser::walkOnCoprocessOpcodeMap(CodeSegment csi, Instruction* info) {
-        DCHECK(false);
+        ubassert(false);
         return false;
     }
 
@@ -183,20 +183,20 @@ namespace intel {
 
         auto mne_func = op_1_map[row][col];
         if (!mne_func) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         auto mne = mne_func(csi.env, prefix, SelConfig());
         if (mne.is_escape || mne.is_prefix || mne.is_undefined) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         if (mne.is_extended) {
             auto ext_func = ext_op_map[mne.ext_group];
             if (!ext_func) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -206,7 +206,7 @@ namespace intel {
             auto tail = mne.ext_tail;
             mne = ext_func(csi.env, prefix, modrm, byte1, SelConfig());
             if (mne.is_escape || mne.is_prefix || mne.is_extended || mne.is_undefined) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -223,19 +223,19 @@ namespace intel {
 
         ParsedItem item;
         if (!parseTableItem(mne.mnemonics, &item)) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         if (item.name.empty()) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         info->opcode = item.name;
 
         if (!parseAbbrs(csi, prefix, item.operands, item.ss, info)) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
@@ -252,20 +252,20 @@ namespace intel {
 
         auto mne_func = op_2_map[row][col];
         if (!mne_func) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         auto mne = mne_func(csi.env, prefix, SelConfig());
         if (mne.is_escape || mne.is_prefix || mne.is_undefined) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         if (mne.is_extended) {
             auto ext_func = ext_op_map[mne.ext_group];
             if (!ext_func) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -275,7 +275,7 @@ namespace intel {
             auto tail = mne.ext_tail;
             mne = ext_func(csi.env, prefix, modrm, byte2, SelConfig());
             if (mne.is_escape || mne.is_prefix || mne.is_extended || mne.is_undefined) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -288,18 +288,18 @@ namespace intel {
 
         ParsedItem item;
         if (!parseTableItem(mne.mnemonics, &item)) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         if (item.name.empty()) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         info->opcode = item.name;
         if (!parseAbbrs(csi, prefix, item.operands, item.ss, info)) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
@@ -325,20 +325,20 @@ namespace intel {
         }
 
         if (!mne_func) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         auto mne = mne_func(csi.env, prefix, SelConfig());
         if (mne.is_escape || mne.is_prefix || mne.is_undefined) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         if (mne.is_extended) {
             auto ext_func = ext_op_map[mne.ext_group];
             if (!ext_func) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -348,7 +348,7 @@ namespace intel {
             auto tail = mne.ext_tail;
             mne = ext_func(csi.env, prefix, modrm, byte3, SelConfig());
             if (mne.is_escape || mne.is_prefix || mne.is_extended || mne.is_undefined) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -361,18 +361,18 @@ namespace intel {
 
         ParsedItem item;
         if (!parseTableItem(mne.mnemonics, &item)) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         if (item.name.empty()) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
         info->opcode = item.name;
         if (!parseAbbrs(csi, prefix, item.operands, item.ss, info)) {
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
@@ -386,11 +386,11 @@ namespace intel {
             return true;
         }
 
-        auto abbr_vec = utl::ascii::split(abbrs, ",");
+        auto abbr_vec = utl::split(abbrs, ",");
         for (auto& abbr : abbr_vec) {
-            abbr = utl::ascii::trim(abbr, true);
+            utl::trim(&abbr, utl::TRF_ALL);
             if (!parseAbbr(csi, prefix, abbr, ss, info)) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
         }
@@ -525,7 +525,7 @@ namespace intel {
             auto mrm = csi.get8(csi.cur + 1);
             info->modrm = mrm;
             if (!parseModRMField(csi, prefix, mrm, false, &m_field)) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -554,7 +554,7 @@ namespace intel {
                             return true;
                         }
                         if (op_size == 8) {
-                            DCHECK(false);
+                            ubassert(false);
                             return false;
                         }
                     } else {
@@ -579,7 +579,7 @@ namespace intel {
                     auto sib = csi.get8(csi.cur + 2);
                     info->sib = sib;
                     if (!parseSIBField(csi, prefix, mrm, sib, &s_field)) {
-                        DCHECK(false);
+                        ubassert(false);
                         return false;
                     }
                     operand = Operand::ofModRM(m_field, s_field);
@@ -628,7 +628,7 @@ namespace intel {
             auto mrm = csi.get8(csi.cur + 1);
             info->modrm = mrm;
             if (!parseModRMField(csi, prefix, mrm, true, &m_field)) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
 
@@ -652,7 +652,7 @@ namespace intel {
                         return true;
                     }
                     if (op_size == 8) {
-                        DCHECK(false);
+                        ubassert(false);
                         return false;
                     }
                 } else {
@@ -755,10 +755,10 @@ namespace intel {
             auto mrm = csi.get8(csi.cur + 1);
             info->modrm = mrm;
             if (!parseModRMField(csi, prefix, mrm, false, &m_field)) {
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
-            DCHECK(!m_field.is_reg);
+            ubassert(!m_field.is_reg);
             Operand operand;
             if (m_field.mrm_mem.has_sib) {
                 ++off;
@@ -767,7 +767,7 @@ namespace intel {
                 auto sib = csi.get8(csi.cur + 2);
                 info->sib = sib;
                 if (!parseSIBField(csi, prefix, mrm, sib, &s_field)) {
-                    DCHECK(false);
+                    ubassert(false);
                     return false;
                 }
                 operand = Operand::ofModRM(m_field, s_field);
@@ -872,10 +872,10 @@ namespace intel {
         } else if (addr_mode == "Y") {
 
         } else {
-            DCHECK(false);
+            ubassert(false);
         }
 
-        DCHECK(false);
+        ubassert(false);
         return false;
     }
 
@@ -922,7 +922,7 @@ namespace intel {
                 field->mrm_mem.disp = csi.get32(csi.cur + disp_offset);
                 break;
             default:
-                DCHECK(false);
+                ubassert(false);
                 return false;
             }
         }
@@ -958,7 +958,7 @@ namespace intel {
             field->sib_base.disp = csi.get32(csi.cur + 3);
             break;
         default:
-            DCHECK(false);
+            ubassert(false);
             return false;
         }
 
@@ -981,7 +981,8 @@ namespace intel {
     }
 
     bool InstructionParser::parseTableItem(const std::string& item, ParsedItem* out) {
-        auto str = utl::ascii::trim(item, false);
+        std::string str(item);
+        utl::trim(&str);
         auto split_idx = str.find(" ");
 
         std::string mnes, abbrs;
@@ -989,7 +990,8 @@ namespace intel {
             mnes = str;
         } else {
             mnes = str.substr(0, split_idx);
-            abbrs = utl::ascii::trim(str.substr(split_idx + 1, str.length() - split_idx), true);
+            abbrs = str.substr(split_idx + 1, str.length() - split_idx);
+            utl::trim(&abbrs, true);
         }
 
         bool bracket = false;

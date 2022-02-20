@@ -48,8 +48,8 @@ namespace dexar {
         Debugger();
         ~Debugger();
 
-        void create(const std::u16string& name);
-        void attach(const std::u16string& name);
+        void create(const std::u16string_view& name);
+        void attach(const std::u16string_view& name);
         void resume();
         void setDebuggerBridge(DebuggerBridge* bridge);
 
@@ -94,7 +94,7 @@ namespace dexar {
         void onBreakpoint(DWORD tid, intptr_t addr);
         void onSingleStep(DWORD tid, intptr_t addr);
 
-        std::u16string ANSIToUTF16(const std::string& str);
+        std::wstring ANSIToW(const std::string& str);
 
         bool is_running_ = false;
         uint32_t ep_sec_vir_addr_ = 0;

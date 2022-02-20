@@ -9,13 +9,13 @@
 #include <iomanip>
 
 #include "utils/log.h"
-#include "utils/convert.h"
+#include "utils/strings/string_utils.hpp"
 
 #include "ukive/views/list/list_view.h"
 #include "ukive/views/layout/restraint_layout.h"
 #include "ukive/views/list/linear_list_layouter.h"
 #include "ukive/views/button.h"
-#include "ukive/system/dialog/open_file_dialog.h"
+#include "ukive/system/dialogs/open_file_dialog.h"
 #include "ukive/elements/texteditor_element.h"
 
 #include "dexar/intel/intel_instruction.h"
