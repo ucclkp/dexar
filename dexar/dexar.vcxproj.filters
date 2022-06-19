@@ -36,6 +36,9 @@
     <ClCompile Include="pe\sections\rsrc_section.cpp">
       <Filter>pe\sections</Filter>
     </ClCompile>
+    <ClCompile Include="pe\sections\reloc_section.cpp">
+      <Filter>pe\sections</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code_data_provider.h" />
@@ -74,6 +77,9 @@
       <Filter>intel</Filter>
     </ClInclude>
     <ClInclude Include="pe\sections\rsrc_section.h">
+      <Filter>pe\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="pe\sections\reloc_section.h">
       <Filter>pe\sections</Filter>
     </ClInclude>
   </ItemGroup>

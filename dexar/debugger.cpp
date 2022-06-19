@@ -465,10 +465,10 @@ namespace dexar {
         dbg_info.thread = thread_map_[tid];
         getRegisterInfo(tid, &dbg_info.context);
 
-        utl::Message msg;
-        msg.id = CYCLER_BREAKPOINT;
-        msg.data = &dbg_info;
-        cycler_.post(&msg);
+        auto msg = utl::Message::get();
+        msg->id = CYCLER_BREAKPOINT;
+        msg->data = &dbg_info;
+        cycler_.post(msg);
 
         {
             std::unique_lock<std::mutex> lk(mutex_);
@@ -488,10 +488,10 @@ namespace dexar {
         dbg_info.thread = thread_map_[tid];
         getRegisterInfo(tid, &dbg_info.context);
 
-        utl::Message msg;
-        msg.id = CYCLER_SINGLE_STEP;
-        msg.data = &dbg_info;
-        cycler_.post(&msg);
+        auto msg = utl::Message::get();
+        msg->id = CYCLER_SINGLE_STEP;
+        msg->data = &dbg_info;
+        cycler_.post(msg);
 
         {
             std::unique_lock<std::mutex> lk(mutex_);

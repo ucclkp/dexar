@@ -81,15 +81,15 @@
 namespace dexar {
 namespace intel {
 
-    OpMap<OpMap<OpcodeHandler>> op_1_map;
-    OpMap<OpMap<OpcodeHandler>> op_2_map;
-    OpMap<OpMap<OpcodeHandler>> op_38H_map;
-    OpMap<OpMap<OpcodeHandler>> op_3AH_map;
-    OpMap<ExtOpcodeHandler> ext_op_map;
-    ModMap<ModMap<ModRMMemHandler>> modrm_mem_map;
-    ModMap<ModRMRegHandler> modrm_reg_map;
-    SIBMap<SIBMap<SIBScaleHandler>> sib_scale_map;
-    SIBMap<SIBBaseHandler> sib_base_map;
+    OpcodeHandler op_1_map[0x10][0x10];
+    OpcodeHandler op_2_map[0x10][0x10];
+    OpcodeHandler op_38H_map[0x10][0x10];
+    OpcodeHandler op_3AH_map[0x10][0x10];
+    ExtOpcodeHandler ext_op_map[0x20];
+    ModRMMemHandler modrm_mem_map[0x3][0x10];
+    ModRMRegHandler modrm_reg_map[0x10];
+    SIBScaleHandler sib_scale_map[0x4][0x10];
+    SIBBaseHandler sib_base_map[0x10];
 
 
     void initOneByteOpcodeMap() {
@@ -615,13 +615,13 @@ namespace intel {
         OPCODE_2_MAP_HANDLER(0x0, 0xD) OPCODE_MAND_NOR(0x0, "prefetchw(/1) Ev");
 
         OPCODE_2_MAP_HANDLER(0x1, 0x0) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovups Vps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovups Vps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vmovupd Vpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vmovss Vx, Hx, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vmovsd Vx, Hx, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x1, 0x1) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovups Wps, Vps");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovups Wps, Vps");
             OPCODE_MAND_RET_NOR(0x66, "vmovupd Wpd, Vpd");
             OPCODE_MAND_RET_NOR(0xF3, "vmovss Wss, Hx, Vss");
             OPCODE_MAND_RET_NOR(0xF2, "vmovsd Wsd, Hx, Vsd");
@@ -639,15 +639,15 @@ namespace intel {
             OPCODE_MAND_RET_NOR(0xF2, "vmovddup Vx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x1, 0x3) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovlps Mq, Vq");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovlps Mq, Vq");
             OPCODE_MAND_RET_NOR(0x66, "vmovlpd Mq, Vq");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x1, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "vunpcklps Vx, Hx, Wx");
+            OPCODE_MAND_RET_NOR(0x0,  "vunpcklps Vx, Hx, Wx");
             OPCODE_MAND_RET_NOR(0x66, "vunpcklpd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x1, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "vunpckhps Vx, Hx, Wx");
+            OPCODE_MAND_RET_NOR(0x0,  "vunpckhps Vx, Hx, Wx");
             OPCODE_MAND_RET_NOR(0x66, "vunpckhpd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x1, 0x6) {
@@ -662,7 +662,7 @@ namespace intel {
             OPCODE_MAND_RET_NOR(0xF3, "vmovshdup Vx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x1, 0x7) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovhps[v1] Mq, Vq");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovhps[v1] Mq, Vq");
             OPCODE_MAND_RET_NOR(0x66, "vmovhpd[v1] Mq, Vq");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x1, 0x8) OPCODE_MAND_EXT(0x0, 0x16, "");
@@ -673,41 +673,41 @@ namespace intel {
         OPCODE_2_MAP_HANDLER(0x2, 0x2) OPCODE_MAND_NOR(0x0, "MOV Cd, Rd");
         OPCODE_2_MAP_HANDLER(0x2, 0x3) OPCODE_MAND_NOR(0x0, "MOV Dd, Rd");
         OPCODE_2_MAP_HANDLER(0x2, 0x8) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovaps Vps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovaps Vps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vmovapd Vpd, Wpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x2, 0x9) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovaps Wps, Vps");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovaps Wps, Vps");
             OPCODE_MAND_RET_NOR(0x66, "vmovapd Wpd, Vpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x2, 0xA) {
-            OPCODE_MAND_RET_NOR(0x0, "cvtpi2ps Vps, Qpi");
+            OPCODE_MAND_RET_NOR(0x0,  "cvtpi2ps Vps, Qpi");
             OPCODE_MAND_RET_NOR(0x66, "cvtpi2pd Vpd, Qpi");
             OPCODE_MAND_RET_NOR(0xF3, "vcvtsi2ss Vss, Hss, Ey");
             OPCODE_MAND_RET_NOR(0xF2, "vcvtsi2sd Vsd, Hsd, Ey");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x2, 0xB) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovntps Mps, Vps");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovntps Mps, Vps");
             OPCODE_MAND_RET_NOR(0x66, "vmovntpd Mpd, Vpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x2, 0xC) {
-            OPCODE_MAND_RET_NOR(0x0, "cvttps2pi Ppi, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "cvttps2pi Ppi, Wps");
             OPCODE_MAND_RET_NOR(0x66, "cvttpd2pi Ppi, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vcvttss2si Gy, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vcvttsd2si Gy, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x2, 0xD) {
-            OPCODE_MAND_RET_NOR(0x0, "cvtps2pi Ppi, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "cvtps2pi Ppi, Wps");
             OPCODE_MAND_RET_NOR(0x66, "cvtpd2pi Qpi, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vcvtss2si Gy, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vcvtsd2si Gy, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x2, 0xE) {
-            OPCODE_MAND_RET_NOR(0x0, "vucomiss Vss, Wss");
+            OPCODE_MAND_RET_NOR(0x0,  "vucomiss Vss, Wss");
             OPCODE_MAND_RET_NOR(0x66, "vucomisd Vsd, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x2, 0xF) {
-            OPCODE_MAND_RET_NOR(0x0, "vcomiss Vss, Wss");
+            OPCODE_MAND_RET_NOR(0x0,  "vcomiss Vss, Wss");
             OPCODE_MAND_RET_NOR(0x66, "vcomisd Vsd, Wsd");
             RET_UND; };
 
@@ -777,139 +777,139 @@ namespace intel {
         } OPCODE_MAND_HANDLER_END;
 
         OPCODE_2_MAP_HANDLER(0x5, 0x0) {
-            OPCODE_MAND_RET_NOR(0x0, "vmovmskps Gy, Ups");
+            OPCODE_MAND_RET_NOR(0x0,  "vmovmskps Gy, Ups");
             OPCODE_MAND_RET_NOR(0x66, "vmovmskpd Gy, Upd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x1) {
-            OPCODE_MAND_RET_NOR(0x0, "vsqrtps Vps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vsqrtps Vps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vsqrtpd Vpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vsqrtss Vss, Hss, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vsqrtsd Vsd, Hsd, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x2) {
-            OPCODE_MAND_RET_NOR(0x0, "vrsqrtps Vps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vrsqrtps Vps, Wps");
             OPCODE_MAND_RET_NOR(0xF3, "vrsqrtss Vss, Hss, Wss");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x3) {
-            OPCODE_MAND_RET_NOR(0x0, "vrcpps Vps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vrcpps Vps, Wps");
             OPCODE_MAND_RET_NOR(0xF3, "vrcpss Vss, Hss, Wss");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "vandps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vandps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vandpd Vpd, Hpd, Wpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "vandnps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vandnps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vandnpd Vpd, Hpd, Wpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x6) {
-            OPCODE_MAND_RET_NOR(0x0, "vorps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vorps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vorpd Vpd, Hpd, Wpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x7) {
-            OPCODE_MAND_RET_NOR(0x0, "vxorps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vxorps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vxorpd Vpd, Hpd, Wpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x8) {
-            OPCODE_MAND_RET_NOR(0x0, "vaddps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vaddps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vaddpd Vpd, Hpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vaddss Vss, Hss, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vaddsd Vsd, Hsd, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0x9) {
-            OPCODE_MAND_RET_NOR(0x0, "vmulps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vmulps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vmulpd Vpd, Hpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vmulss Vss, Hss, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vmulsd Vsd, Hsd, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0xA) {
-            OPCODE_MAND_RET_NOR(0x0, "vcvtps2pd Vpd, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vcvtps2pd Vpd, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vcvtpd2ps Vps, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vcvtss2sd Vsd, Hx, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vcvtsd2ss Vss, Hx, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0xB) {
-            OPCODE_MAND_RET_NOR(0x0, "vcvtdq2ps Vps, Wpq");
+            OPCODE_MAND_RET_NOR(0x0,  "vcvtdq2ps Vps, Wpq");
             OPCODE_MAND_RET_NOR(0x66, "vcvtps2dq Vdq, Wps");
             OPCODE_MAND_RET_NOR(0xF3, "vcvttps2dq Vdq, Wps");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0xC) {
-            OPCODE_MAND_RET_NOR(0x0, "vsubps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vsubps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vsubpd Vpd, Hpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vsubss Vss, Hss, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vsubsd Vsd, Hsd, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0xD) {
-            OPCODE_MAND_RET_NOR(0x0, "vminps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vminps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vminpd Vpd, Hpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vminss Vss, Hss, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vminsd Vsd, Hsd, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0xE) {
-            OPCODE_MAND_RET_NOR(0x0, "vdivps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vdivps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vdivpd Vpd, Hpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vdivss Vss, Hss, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vdivsd Vsd, Hsd, Wsd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x5, 0xF) {
-            OPCODE_MAND_RET_NOR(0x0, "vmaxps Vps, Hps, Wps");
+            OPCODE_MAND_RET_NOR(0x0,  "vmaxps Vps, Hps, Wps");
             OPCODE_MAND_RET_NOR(0x66, "vmaxpd Vpd, Hpd, Wpd");
             OPCODE_MAND_RET_NOR(0xF3, "vmaxss Vss, Hss, Wss");
             OPCODE_MAND_RET_NOR(0xF2, "vmaxsd Vsd, Hsd, Wsd");
             RET_UND; };
 
         OPCODE_2_MAP_HANDLER(0x6, 0x0) {
-            OPCODE_MAND_RET_NOR(0x0, "punpcklbw Pq, Qd");
+            OPCODE_MAND_RET_NOR(0x0,  "punpcklbw Pq, Qd");
             OPCODE_MAND_RET_NOR(0x66, "vpunpcklbw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x1) {
-            OPCODE_MAND_RET_NOR(0x0, "punpcklwd Pq, Qd");
+            OPCODE_MAND_RET_NOR(0x0,  "punpcklwd Pq, Qd");
             OPCODE_MAND_RET_NOR(0x66, "vpunpcklwd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x2) {
-            OPCODE_MAND_RET_NOR(0x0, "punpckldq Pq, Qd");
+            OPCODE_MAND_RET_NOR(0x0,  "punpckldq Pq, Qd");
             OPCODE_MAND_RET_NOR(0x66, "vpunpckldq Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x3) {
-            OPCODE_MAND_RET_NOR(0x0, "packsswb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,  "packsswb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpacksswb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "pcmpgtb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,  "pcmpgtb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpcmpgtb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "pcmpgtw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pcmpgtw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpcmpgtw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x6) {
-            OPCODE_MAND_RET_NOR(0x0, "pcmpgtd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pcmpgtd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpcmpgtd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x7) {
-            OPCODE_MAND_RET_NOR(0x0, "packuswb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "packuswb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpackuswb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x8) {
-            OPCODE_MAND_RET_NOR(0x0, "punpckhbw Pq, Qd");
+            OPCODE_MAND_RET_NOR(0x0,   "punpckhbw Pq, Qd");
             OPCODE_MAND_RET_NOR(0x66, "vpunpckhbw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0x9) {
-            OPCODE_MAND_RET_NOR(0x0, "punpckhwd Pq, Qd");
+            OPCODE_MAND_RET_NOR(0x0,   "punpckhwd Pq, Qd");
             OPCODE_MAND_RET_NOR(0x66, "vpunpckhwd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0xA) {
-            OPCODE_MAND_RET_NOR(0x0, "punpckhdq Pq, Qd");
+            OPCODE_MAND_RET_NOR(0x0,   "punpckhdq Pq, Qd");
             OPCODE_MAND_RET_NOR(0x66, "vpunpckhdq Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0xB) {
-            OPCODE_MAND_RET_NOR(0x0, "packssdw Pq, Qd");
+            OPCODE_MAND_RET_NOR(0x0,   "packssdw Pq, Qd");
             OPCODE_MAND_RET_NOR(0x66, "vpackssdw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x6, 0xC) OPCODE_MAND_NOR(0x66, "vpunpcklqdq Vx, Hx, Wx");
         OPCODE_2_MAP_HANDLER(0x6, 0xD) OPCODE_MAND_NOR(0x66, "vpunpckhqdq Vx, Hx, Wx");
         OPCODE_2_MAP_HANDLER(0x6, 0xE) {
-            if (pfx.mand == 0x0) OPCODE_DQ_BY_REXW("movd Pd, Ey", "movq Pd, Ey");
+            if (pfx.mand == 0x0)  OPCODE_DQ_BY_REXW("movd Pd, Ey", "movq Pd, Ey");
             if (pfx.mand == 0x66) OPCODE_VDQ_BY_VEXW("vmovd Vy, Ey", "vmovq Vy, Ey");
             RET_UND;
         };
@@ -932,15 +932,15 @@ namespace intel {
         OPCODE_2_MAP_HANDLER(0x7, 0x3) {
             return OpcodeDesc::ofExt(0x14, ""); };
         OPCODE_2_MAP_HANDLER(0x7, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "pcmpeqb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pcmpeqb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpcmpeqb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x7, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "pcmpeqw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pcmpeqw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpcmpeqw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x7, 0x6) {
-            OPCODE_MAND_RET_NOR(0x0, "pcmpeqd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pcmpeqd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpcmpeqd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x7, 0x7) {
@@ -965,7 +965,7 @@ namespace intel {
             OPCODE_MAND_RET_NOR(0xF2, "vhsubps Vps, Hps, Wps");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0x7, 0xE) {
-            if (pfx.mand == 0x0) OPCODE_DQ_BY_REXW("movd Ey, Pd", "movq Ey, Pd");
+            if (pfx.mand == 0x0)  OPCODE_DQ_BY_REXW("movd Ey, Pd", "movq Ey, Pd");
             if (pfx.mand == 0x66) OPCODE_VDQ_BY_VEXW("vmovd Ey, Vy", "vmovq Ey, Vy")
             OPCODE_MAND_RET_NOR(0xF3, "vmovq Vq, Wq");
             RET_UND; };
@@ -1137,22 +1137,22 @@ namespace intel {
         OPCODE_2_MAP_HANDLER(0xC, 0x0) OPCODE_MAND_NOR(0x0, "XADD Eb, Gb");
         OPCODE_2_MAP_HANDLER(0xC, 0x1) OPCODE_MAND_NOR(0x0, "XADD Ev, Gv");
         OPCODE_2_MAP_HANDLER(0xC, 0x2) {
-            OPCODE_MAND_RET_NOR(0x0, "vcmpps Vps, Hps, Wps, Ib");
+            OPCODE_MAND_RET_NOR(0x0,  "vcmpps Vps, Hps, Wps, Ib");
             OPCODE_MAND_RET_NOR(0x66, "vcmppd Vpd, Hpd, Wpd, Ib");
             OPCODE_MAND_RET_NOR(0xF3, "vcmpss Vss, Hss, Wss, Ib");
             OPCODE_MAND_RET_NOR(0xF2, "vcmpsd Vsd, Hsd, Wsd, Ib");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xC, 0x3) OPCODE_MAND_NOR(0x0, "movnti My, Gy");
         OPCODE_2_MAP_HANDLER(0xC, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "pinsrw Pq, Ry/Mw, Ib");
+            OPCODE_MAND_RET_NOR(0x0,   "pinsrw Pq, Ry/Mw, Ib");
             OPCODE_MAND_RET_NOR(0x66, "vpinsrw Vdq, Hdq, Ry/Mw, Ib");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xC, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "pextrw Gd, Nq, Ib");
+            OPCODE_MAND_RET_NOR(0x0,   "pextrw Gd, Nq, Ib");
             OPCODE_MAND_RET_NOR(0x66, "vpextrw Gd, Udq, Ib");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xC, 0x6) {
-            OPCODE_MAND_RET_NOR(0x0, "vshufps Vps, Hps, Wps, Ib");
+            OPCODE_MAND_RET_NOR(0x0,  "vshufps Vps, Hps, Wps, Ib");
             OPCODE_MAND_RET_NOR(0x66, "vshufpd Vpd, Hpd, Wpd, Ib");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xC, 0x7) {
@@ -1219,23 +1219,23 @@ namespace intel {
             OPCODE_MAND_RET_NOR(0xF2, "vaddsubps Vps, Hps, Wps");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x1) {
-            OPCODE_MAND_RET_NOR(0x0, "psrlw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psrlw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsrlw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x2) {
-            OPCODE_MAND_RET_NOR(0x0, "psrld Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psrld Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsrld Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x3) {
-            OPCODE_MAND_RET_NOR(0x0, "psrlq Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psrlq Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsrlq Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "paddq Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddq Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddq Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "pmullw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmullw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmullw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x6) {
@@ -1244,64 +1244,64 @@ namespace intel {
             OPCODE_MAND_RET_NOR(0xF2, "movdq2q Pq, Uq");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x7) {
-            OPCODE_MAND_RET_NOR(0x0, "pmovmskb Gd, Nq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmovmskb Gd, Nq");
             OPCODE_MAND_RET_NOR(0x66, "vpmovmskb Gd, Ux");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x8) {
-            OPCODE_MAND_RET_NOR(0x0, "psubusb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubusb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubusb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0x9) {
-            OPCODE_MAND_RET_NOR(0x0, "psubusw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubusw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubusw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0xA) {
-            OPCODE_MAND_RET_NOR(0x0, "pminub Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pminub Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpminub Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0xB) {
-            OPCODE_MAND_RET_NOR(0x0, "pand Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pand Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpand Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0xC) {
-            OPCODE_MAND_RET_NOR(0x0, "paddusb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddusb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddusb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0xD) {
-            OPCODE_MAND_RET_NOR(0x0, "paddusw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddusw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddusw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0xE) {
-            OPCODE_MAND_RET_NOR(0x0, "pmaxub Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmaxub Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmaxub Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xD, 0xF) {
-            OPCODE_MAND_RET_NOR(0x0, "pandn Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pandn Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpandn Vx, Hx, Wx");
             RET_UND; };
 
         OPCODE_2_MAP_HANDLER(0xE, 0x0) {
-            OPCODE_MAND_RET_NOR(0x0, "pavgb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pavgb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpavgb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x1) {
-            OPCODE_MAND_RET_NOR(0x0, "psraw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psraw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsraw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x2) {
-            OPCODE_MAND_RET_NOR(0x0, "psrad Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psrad Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsrad Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x3) {
-            OPCODE_MAND_RET_NOR(0x0, "pavgw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pavgw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpavgw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "pmulhuw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmulhuw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmulhuw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "pmulhw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmulhw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmulhw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x6) {
@@ -1310,110 +1310,110 @@ namespace intel {
             OPCODE_MAND_RET_NOR(0xF2, "vcvtpd2dq Vx, Wpd");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x7) {
-            OPCODE_MAND_RET_NOR(0x0, "movntq Mq, Pq");
+            OPCODE_MAND_RET_NOR(0x0,   "movntq Mq, Pq");
             OPCODE_MAND_RET_NOR(0x66, "vmovntdq Mx, Vx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x8) {
-            OPCODE_MAND_RET_NOR(0x0, "psubsb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubsb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubsb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0x9) {
-            OPCODE_MAND_RET_NOR(0x0, "psubsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0xA) {
-            OPCODE_MAND_RET_NOR(0x0, "pminsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pminsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpminsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0xB) {
-            OPCODE_MAND_RET_NOR(0x0, "por Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "por Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpor Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0xC) {
-            OPCODE_MAND_RET_NOR(0x0, "paddsb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddsb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddsb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0xD) {
-            OPCODE_MAND_RET_NOR(0x0, "paddsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0xE) {
-            OPCODE_MAND_RET_NOR(0x0, "pmaxsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmaxsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmaxsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_2_MAP_HANDLER(0xE, 0xF) {
-            OPCODE_MAND_RET_NOR(0x0, "pxor Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pxor Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpxor Vx, Hx, Wx");
             RET_UND; };
 
         OPCODE_2_MAP_HANDLER(0xF, 0x0) OPCODE_MAND_NOR(0xF2, "vlddqu Vx, Mx");
         OPCODE_2_MAP_HANDLER(0xF, 0x1) {
-            OPCODE_MAND_RET_NOR(0x0, "psllw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psllw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsllw Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x2) {
-            OPCODE_MAND_RET_NOR(0x0, "pslld Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pslld Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpslld Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x3) {
-            OPCODE_MAND_RET_NOR(0x0, "psllq Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psllq Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsllq Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "pmuludq Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmuludq Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmuludq Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "pmaddwd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmaddwd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmaddwd Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x6) {
-            OPCODE_MAND_RET_NOR(0x0, "psadbw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psadbw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsadbw Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x7) {
-            OPCODE_MAND_RET_NOR(0x0, "maskmovq Pq, Nq");
+            OPCODE_MAND_RET_NOR(0x0,   "maskmovq Pq, Nq");
             OPCODE_MAND_RET_NOR(0x66, "vmaskmovdqu Vdq, Udq");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x8) {
-            OPCODE_MAND_RET_NOR(0x0, "psubb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubb Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0x9) {
-            OPCODE_MAND_RET_NOR(0x0, "psubw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubw Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0xA) {
-            OPCODE_MAND_RET_NOR(0x0, "psubd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubd Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0xB) {
-            OPCODE_MAND_RET_NOR(0x0, "psubq Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psubq Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsubq Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0xC) {
-            OPCODE_MAND_RET_NOR(0x0, "paddb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddb Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0xD) {
-            OPCODE_MAND_RET_NOR(0x0, "paddw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddw Vx, Hx, Wx");
             RET_UND;
         };
         OPCODE_2_MAP_HANDLER(0xF, 0xE) {
-            OPCODE_MAND_RET_NOR(0x0, "paddd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "paddd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpaddd Vx, Hx, Wx");
             RET_UND;
         };
@@ -1422,51 +1422,51 @@ namespace intel {
     void initThreeByteOpcodeMap() {
         // 38H
         OPCODE_38H_MAP_HANDLER(0x0, 0x0) {
-            OPCODE_MAND_RET_NOR(0x0, "pshufb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pshufb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpshufb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x1) {
-            OPCODE_MAND_RET_NOR(0x0, "phaddw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "phaddw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vphaddw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x2) {
-            OPCODE_MAND_RET_NOR(0x0, "phaddd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "phaddd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vphaddd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x3) {
-            OPCODE_MAND_RET_NOR(0x0, "phaddsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "phaddsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vphaddsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x4) {
-            OPCODE_MAND_RET_NOR(0x0, "pmaddubsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmaddubsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmaddubsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x5) {
-            OPCODE_MAND_RET_NOR(0x0, "phsubw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "phsubw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vphsubw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x6) {
-            OPCODE_MAND_RET_NOR(0x0, "phsubd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "phsubd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vphsubd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x7) {
-            OPCODE_MAND_RET_NOR(0x0, "phsubsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "phsubsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vphsubsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x8) {
-            OPCODE_MAND_RET_NOR(0x0, "psignb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psignb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsignb Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0x9) {
-            OPCODE_MAND_RET_NOR(0x0, "psignw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psignw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsignw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0xA) {
-            OPCODE_MAND_RET_NOR(0x0, "psignd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "psignd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpsignd Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0xB) {
-            OPCODE_MAND_RET_NOR(0x0, "pmulhrsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pmulhrsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpmulhrsw Vx, Hx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x0, 0xC) OPCODE_MAND_NOR(0x66, "vpermilps[v] Vx, Hx, Wx");
@@ -1484,15 +1484,15 @@ namespace intel {
         OPCODE_38H_MAP_HANDLER(0x1, 0x9) OPCODE_MAND_NOR(0x66, "vbroadcastsd[v] Vqq, Mdq");
         OPCODE_38H_MAP_HANDLER(0x1, 0xA) OPCODE_MAND_NOR(0x66, "vbroadcastf128[v] Vqq, Mdq");
         OPCODE_38H_MAP_HANDLER(0x1, 0xC) {
-            OPCODE_MAND_RET_NOR(0x0, "pabsb Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pabsb Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpabsb Vx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x1, 0xD) {
-            OPCODE_MAND_RET_NOR(0x0, "pabsw Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pabsw Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpabsw Vx, Wx");
             RET_UND; };
         OPCODE_38H_MAP_HANDLER(0x1, 0xE) {
-            OPCODE_MAND_RET_NOR(0x0, "pabsd Pq, Qq");
+            OPCODE_MAND_RET_NOR(0x0,   "pabsd Pq, Qq");
             OPCODE_MAND_RET_NOR(0x66, "vpabsd Vx, Wx");
             RET_UND; };
 
@@ -1640,7 +1640,7 @@ namespace intel {
         OPCODE_3AH_MAP_HANDLER(0x0, 0xD) OPCODE_MAND_NOR(0x66, "vblendpd Vx, Hx, Wx, Ib");
         OPCODE_3AH_MAP_HANDLER(0x0, 0xE) OPCODE_MAND_NOR(0x66, "vpblendw Vx, Hx, Wx, Ib");
         OPCODE_3AH_MAP_HANDLER(0x0, 0xF) {
-            OPCODE_MAND_RET_NOR(0x0, "palignr Pq, Qq, Ib");
+            OPCODE_MAND_RET_NOR(0x0,   "palignr Pq, Qq, Ib");
             OPCODE_MAND_RET_NOR(0x66, "vpalignr Vx, Hx, Wx, Ib");
             RET_UND; };
 

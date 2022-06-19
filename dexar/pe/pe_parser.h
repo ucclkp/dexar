@@ -16,6 +16,7 @@
 namespace dexar {
 namespace pe {
 
+    // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format
     class PEParser {
     public:
         PEParser() = default;
@@ -32,7 +33,10 @@ namespace pe {
         bool parseImportSection(std::istream& s);
         bool parseResourceSection(std::istream& s);
 
-        std::string stub_;
+        bool locateSection(
+            size_t idx, std::istream& s, const SectionHeader** sh);
+
+        unsigned char stub_[kPEStubLength];
         CoffFileHeader coff_header_;
         OptionalHeaderStd opt_header_std_;
         OptionalHeaderWin opt_header_win_;

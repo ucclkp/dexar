@@ -33,7 +33,7 @@ namespace pe {
         READ_STREAM_LE(ptr->id_entry_num, 2);
 
         for (uint16_t i = 0; i < ptr->name_entry_num; ++i) {
-            ResDirectoryEntry entry;
+            ResDirectoryEntry entry{};
             if (!parseDirectoryEntry(s, &entry)) {
                 return false;
             }
@@ -41,7 +41,7 @@ namespace pe {
         }
 
         for (uint16_t i = 0; i < ptr->id_entry_num; ++i) {
-            ResDirectoryEntry entry;
+            ResDirectoryEntry entry{};
             if (!parseDirectoryEntry(s, &entry)) {
                 return false;
             }

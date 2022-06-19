@@ -7,9 +7,6 @@
 #ifndef DEXAR_OPCODE_MAP_H_
 #define DEXAR_OPCODE_MAP_H_
 
-#include <functional>
-#include <unordered_map>
-
 #include "dexar/intel/intel_instruction_params.h"
 
 
@@ -73,47 +70,38 @@ namespace intel {
     /**
      * Opcode Maps
      */
-    template <typename T>
-    using OpMap = std::unordered_map<uint8_t, T>;
-
     // (cpu_mode, pfx)
-    using OpcodeHandler = std::function<OpcodeDesc(const Env&, const Prefix&, const SelConfig&)>;
+    typedef OpcodeDesc (*OpcodeHandler)(const Env&, const Prefix&, const SelConfig&);
 
     // (pfx, modrm, op)
-    using ExtOpcodeHandler = std::function<OpcodeDesc(const Env&, const Prefix&, uint8_t, uint8_t, const SelConfig&)>;
+    typedef OpcodeDesc (*ExtOpcodeHandler)(const Env&, const Prefix&, uint8_t, uint8_t, const SelConfig&);
 
-    extern OpMap<OpMap<OpcodeHandler>> op_1_map;
-    extern OpMap<OpMap<OpcodeHandler>> op_2_map;
-    extern OpMap<OpMap<OpcodeHandler>> op_38H_map;
-    extern OpMap<OpMap<OpcodeHandler>> op_3AH_map;
-    extern OpMap<ExtOpcodeHandler> ext_op_map;
+    extern OpcodeHandler op_1_map[0x10][0x10];
+    extern OpcodeHandler op_2_map[0x10][0x10];
+    extern OpcodeHandler op_38H_map[0x10][0x10];
+    extern OpcodeHandler op_3AH_map[0x10][0x10];
+    extern ExtOpcodeHandler ext_op_map[0x20];
 
     /**
      * ModRM Maps
      */
-    template <typename T>
-    using ModMap = std::unordered_map<uint8_t, T>;
-
     // (cpu_mode)
-    using ModRMMemHandler = std::function<ModRMMemMode(const Env&)>;
-    using ModRMRegHandler = std::function<ModRMRegMode(const Env&)>;
+    typedef ModRMMemMode (*ModRMMemHandler)(const Env&);
+    typedef ModRMRegMode (*ModRMRegHandler)(const Env&);
 
-    extern ModMap<ModMap<ModRMMemHandler>> modrm_mem_map;
-    extern ModMap<ModRMRegHandler> modrm_reg_map;
+    extern ModRMMemHandler modrm_mem_map[0x3][0x10];
+    extern ModRMRegHandler modrm_reg_map[0x10];
 
     /**
      * SIB Maps
      */
-    template <typename T>
-    using SIBMap = std::unordered_map<uint8_t, T>;
-
     // (cpu_mode)
-    using SIBScaleHandler = std::function<SIBScaleMode(const Env&)>;
+    typedef SIBScaleMode (*SIBScaleHandler)(const Env&);
     // (cpu_mode, modrm)
-    using SIBBaseHandler = std::function<SIBBaseMode(const Env&, uint8_t)>;
+    typedef SIBBaseMode (*SIBBaseHandler)(const Env&, uint8_t);
 
-    extern SIBMap<SIBMap<SIBScaleHandler>> sib_scale_map;
-    extern SIBMap<SIBBaseHandler> sib_base_map;
+    extern SIBScaleHandler sib_scale_map[0x4][0x10];
+    extern SIBBaseHandler sib_base_map[0x10];
 
     void initOneByteOpcodeMap();
     void initTwoByteOpcodeMap();

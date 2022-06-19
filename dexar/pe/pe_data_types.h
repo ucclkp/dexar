@@ -13,7 +13,7 @@
 namespace dexar {
 namespace pe {
 
-    const uint8_t kPEStubLength = 0x3C;
+    const size_t kPEStubLength = 0x3C;
     const uint32_t kPESignature = 0x00004550;    // PE\0\0
     const uint32_t kPEDataDirectoryLimitSize = 0x10;
 
@@ -322,7 +322,7 @@ namespace pe {
         uint64_t heap_reserve_size;
         uint64_t heap_commit_size;
         uint32_t loader_flags;
-        uint32_t rva_and_sizes_num;
+        uint32_t dd_num;
     };
 
 

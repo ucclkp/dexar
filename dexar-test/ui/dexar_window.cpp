@@ -7,6 +7,7 @@
 #include "dexar-test/ui/dexar_window.h"
 
 #include <iomanip>
+#include <fstream>
 
 #include "utils/log.h"
 #include "utils/strings/string_utils.hpp"
@@ -15,7 +16,7 @@
 #include "ukive/views/layout/restraint_layout.h"
 #include "ukive/views/list/linear_list_layouter.h"
 #include "ukive/views/button.h"
-#include "ukive/system/dialogs/open_file_dialog.h"
+#include "ukive/system/dialogs/sys_open_file_dialog.h"
 #include "ukive/elements/texteditor_element.h"
 
 #include "dexar/intel/intel_instruction.h"
@@ -71,7 +72,7 @@ namespace dexar {
             debugger_.resume();
         } else if (v == browser_button_) {
             std::unique_ptr<ukive::OpenFileDialog> dialog(ukive::OpenFileDialog::create());
-            dialog->addType(u"*.exe", u"PE文件");
+            dialog->addType(u"*.exe;*.dll", u"PE文件");
             dialog->addType(u"*.*", u"所有文件");
             if (dialog->show(this, 0) == 1) {
                 auto& files = dialog->getSelectedFiles();
@@ -81,6 +82,18 @@ namespace dexar {
                 }
             }
         } else if (v == parse_button_) {
+            std::ifstream file(std::filesystem::path(file_path_), std::ios::binary);
+            if (!file) {
+                jour_e("Cannot open file: %s", file_path_);
+                return;
+            }
+
+            pe::PEParser parser;
+            if (!parser.parse(file)) {
+                jour_e("Cannot parse file: %s", file_path_);
+                return;
+            }
+
             if (!debugger_.isRunning()) {
                 debugger_.setDebuggerBridge(this);
                 debugger_.create(file_path_);

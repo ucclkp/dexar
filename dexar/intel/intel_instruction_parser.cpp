@@ -317,7 +317,7 @@ namespace intel {
         uint8_t row = byte3 >> 4;
         uint8_t col = byte3 & 0x0F;
 
-        OpcodeHandler mne_func;
+        OpcodeHandler mne_func = nullptr;
         if (byte2 == 0x38) {
             mne_func = op_38H_map[row][col];
         } else if (byte2 == 0x3A) {

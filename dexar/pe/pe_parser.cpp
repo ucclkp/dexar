@@ -11,6 +11,7 @@
 #include "sections/edata_section.h"
 #include "sections/idata_section.h"
 #include "sections/rsrc_section.h"
+#include "sections/reloc_section.h"
 
 
 namespace dexar {
@@ -18,9 +19,7 @@ namespace pe {
 
     bool PEParser::parse(std::istream& s) {
         // MS-DOS Stub (Image Only)
-        char stub_buf[kPEStubLength];
-        READ_STREAM(stub_buf[0], kPEStubLength);
-        stub_.append(stub_buf, kPEStubLength);
+        READ_STREAM(stub_[0], kPEStubLength);
 
         // Signature offset
         uint32_t offset;
@@ -106,15 +105,15 @@ namespace pe {
             }
 
             READ_STREAM_LE(opt_header_win_.loader_flags, 4);
-            READ_STREAM_LE(opt_header_win_.rva_and_sizes_num, 4);
+            READ_STREAM_LE(opt_header_win_.dd_num, 4);
 
             // 防止溢出
-            if (opt_header_win_.rva_and_sizes_num > kPEDataDirectoryLimitSize) {
-                opt_header_win_.rva_and_sizes_num = kPEDataDirectoryLimitSize;
+            if (opt_header_win_.dd_num > kPEDataDirectoryLimitSize) {
+                opt_header_win_.dd_num = kPEDataDirectoryLimitSize;
             }
 
             // Data Directories
-            for (uint32_t i = 0; i < opt_header_win_.rva_and_sizes_num; ++i) {
+            for (uint32_t i = 0; i < opt_header_win_.dd_num; ++i) {
                 ImageDataDirectory dir;
                 READ_STREAM_LE(dir.rva, 4);
                 READ_STREAM_LE(dir.size, 4);
@@ -138,40 +137,77 @@ namespace pe {
             sections_.push_back(std::move(header));
         }
 
-        //parseImportSection(s);
-        parseResourceSection(s);
+        const SectionHeader* sh;
+        if (locateSection(0, s, &sh)) {
+            ExportSectionParser edata_parser;
+            bool ret = edata_parser.parse(s, *sh);
+        }
+
+        if (locateSection(1, s, &sh)) {
+            ImportSectionParser idata_parser;
+            bool ret = idata_parser.parse(
+                s, *sh, opt_header_std_.magic == OptionalHeaderMagic::PE32Plus);
+        }
+
+        if (locateSection(2, s, &sh)) {
+            ResourceSectionParser res_parser;
+            std::unique_ptr<ResDirectoryTable> root;
+            bool ret = res_parser.parse(s, &root);
+        }
+
+        std::vector<BaseRelocBlock> blocks;
+        if (locateSection(5, s, &sh)) {
+            parseRelocSection(s, data_dirs_[5].size, &blocks);
+        }
         return true;
     }
 
     bool PEParser::parseExportSection(std::istream& s) {
-        for (const auto& sec : sections_) {
-            if (std::memcmp(sec.name, kExportSectionName, 8) == 0) {
-                auto prev_pos = s.tellg();
+        if (opt_header_win_.dd_num < 1) {
+            return false;
+        }
 
-                auto table_off = data_dirs_[0].rva - sec.virtual_addr;
+        auto t_rva = data_dirs_[0].rva;
+
+        for (const auto& sec : sections_) {
+            if (sec.virtual_addr <= t_rva &&
+                sec.virtual_addr + sec.virtual_size > t_rva)
+            {
+                auto prev_pos = s.tellg();
+                auto table_off = t_rva - sec.virtual_addr;
                 s.seekg(sec.raw_data_ptr + table_off);
                 if (!s) {
+                    s.clear();
                     s.seekg(prev_pos);
                     return false;
                 }
 
                 ExportSectionParser edata_parser;
                 bool ret = edata_parser.parse(s, sec);
+                s.clear();
                 s.seekg(prev_pos);
                 return ret;
             }
         }
-        return true;
+        return false;
     }
 
     bool PEParser::parseImportSection(std::istream& s) {
-        for (const auto& sec : sections_) {
-            if (std::memcmp(sec.name, kImportSectionName, 8) == 0) {
-                auto prev_pos = s.tellg();
+        if (opt_header_win_.dd_num < 2) {
+            return false;
+        }
 
-                auto table_off = data_dirs_[1].rva - sec.virtual_addr;
+        auto t_rva = data_dirs_[1].rva;
+
+        for (const auto& sec : sections_) {
+            if (sec.virtual_addr <= t_rva &&
+                sec.virtual_addr + sec.virtual_size > t_rva)
+            {
+                auto prev_pos = s.tellg();
+                auto table_off = t_rva - sec.virtual_addr;
                 s.seekg(sec.raw_data_ptr + table_off);
                 if (!s) {
+                    s.clear();
                     s.seekg(prev_pos);
                     return false;
                 }
@@ -179,21 +215,30 @@ namespace pe {
                 ImportSectionParser idata_parser;
                 bool ret = idata_parser.parse(
                     s, sec, opt_header_std_.magic == OptionalHeaderMagic::PE32Plus);
+                s.clear();
                 s.seekg(prev_pos);
                 return ret;
             }
         }
-        return true;
+        return false;
     }
 
     bool PEParser::parseResourceSection(std::istream& s) {
-        for (const auto& sec : sections_) {
-            if (std::memcmp(sec.name, kResourceSectionName, 8) == 0) {
-                auto prev_pos = s.tellg();
+        if (opt_header_win_.dd_num < 3) {
+            return false;
+        }
 
-                auto table_off = data_dirs_[2].rva - sec.virtual_addr;
+        auto t_rva = data_dirs_[2].rva;
+
+        for (const auto& sec : sections_) {
+            if (sec.virtual_addr <= t_rva &&
+                sec.virtual_addr + sec.virtual_size > t_rva)
+            {
+                auto prev_pos = s.tellg();
+                auto table_off = t_rva - sec.virtual_addr;
                 s.seekg(sec.raw_data_ptr + table_off);
                 if (!s) {
+                    s.clear();
                     s.seekg(prev_pos);
                     return false;
                 }
@@ -201,11 +246,40 @@ namespace pe {
                 ResourceSectionParser res_parser;
                 std::unique_ptr<ResDirectoryTable> root;
                 bool ret = res_parser.parse(s, &root);
+                s.clear();
                 s.seekg(prev_pos);
                 return ret;
             }
         }
         return true;
+    }
+
+    bool PEParser::locateSection(
+        size_t idx, std::istream& s, const SectionHeader** sh)
+    {
+        if (opt_header_win_.dd_num < idx + 1) {
+            return false;
+        }
+
+        auto t_rva = data_dirs_[idx].rva;
+
+        for (const auto& sec : sections_) {
+            if (sec.virtual_addr <= t_rva &&
+                sec.virtual_addr + sec.virtual_size > t_rva)
+            {
+                auto prev_pos = s.tellg();
+                auto table_off = t_rva - sec.virtual_addr;
+                s.seekg(sec.raw_data_ptr + table_off);
+                if (!s) {
+                    s.clear();
+                    s.seekg(prev_pos);
+                    return false;
+                }
+                *sh = &sec;
+                return true;
+            }
+        }
+        return false;
     }
 
     const CoffFileHeader& PEParser::getCOFFHeader() const {
