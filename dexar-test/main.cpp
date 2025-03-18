@@ -6,6 +6,7 @@
 
 #include "utils/log.h"
 #include "utils/platform_utils.h"
+#include "utils/platform_entrances.h"
 
 #include "ukive/app/application.h"
 

@@ -19,9 +19,9 @@ namespace dexar {
     public:
         virtual ~CodeDataProvider() = default;
 
-        virtual uint8_t get8(uint32_t off) const = 0;
-        virtual uint16_t get16(uint32_t off) const = 0;
-        virtual uint32_t get32(uint32_t off) const = 0;
+        virtual uint8_t get8(uint64_t off) const = 0;
+        virtual uint16_t get16(uint64_t off) const = 0;
+        virtual uint32_t get32(uint64_t off) const = 0;
         virtual uint64_t get64(uint64_t off) const = 0;
     };
 
@@ -30,9 +30,9 @@ namespace dexar {
     public:
         explicit StaticCodeDataProvider(const uint8_t* buf);
 
-        uint8_t get8(uint32_t off) const override;
-        uint16_t get16(uint32_t off) const override;
-        uint32_t get32(uint32_t off) const override;
+        uint8_t get8(uint64_t off) const override;
+        uint16_t get16(uint64_t off) const override;
+        uint32_t get32(uint64_t off) const override;
         uint64_t get64(uint64_t off) const override;
 
     private:
@@ -44,9 +44,9 @@ namespace dexar {
     public:
         DynamicCodeDataProvider(intptr_t base, HANDLE process);
 
-        uint8_t get8(uint32_t off) const override;
-        uint16_t get16(uint32_t off) const override;
-        uint32_t get32(uint32_t off) const override;
+        uint8_t get8(uint64_t off) const override;
+        uint16_t get16(uint64_t off) const override;
+        uint32_t get32(uint64_t off) const override;
         uint64_t get64(uint64_t off) const override;
 
     private:

@@ -4,9 +4,9 @@
 // This program is licensed under GPLv3 license that can be
 // found in the LICENSE file.
 
-#include "dexar/code_data_provider.h"
+#include <cassert>
 
-#include "utils/log.h"
+#include "dexar/code_data_provider.h"
 
 
 namespace dexar {
@@ -15,15 +15,15 @@ namespace dexar {
     StaticCodeDataProvider::StaticCodeDataProvider(const uint8_t* buf)
         : buf_(buf) {}
 
-    uint8_t StaticCodeDataProvider::get8(uint32_t off) const {
+    uint8_t StaticCodeDataProvider::get8(uint64_t off) const {
         return buf_[off];
     }
 
-    uint16_t StaticCodeDataProvider::get16(uint32_t off) const {
+    uint16_t StaticCodeDataProvider::get16(uint64_t off) const {
         return *reinterpret_cast<const uint16_t*>(buf_ + off);
     }
 
-    uint32_t StaticCodeDataProvider::get32(uint32_t off) const {
+    uint32_t StaticCodeDataProvider::get32(uint64_t off) const {
         return *reinterpret_cast<const uint32_t*>(buf_ + off);
     }
 
@@ -38,37 +38,37 @@ namespace dexar {
           process_(process) {
     }
 
-    uint8_t DynamicCodeDataProvider::get8(uint32_t off) const {
+    uint8_t DynamicCodeDataProvider::get8(uint64_t off) const {
         uint8_t dat = 0;
         SIZE_T read_byte_count = 0;
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 1, &read_byte_count);
         if (ret == 0 || read_byte_count != 1) {
-            ubassert(false);
+            assert(false);
             return 0;
         }
         return dat;
     }
 
-    uint16_t DynamicCodeDataProvider::get16(uint32_t off) const {
+    uint16_t DynamicCodeDataProvider::get16(uint64_t off) const {
         uint16_t dat = 0;
         SIZE_T read_byte_count = 0;
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 2, &read_byte_count);
         if (ret == 0 || read_byte_count != 2) {
-            ubassert(false);
+            assert(false);
             return 0;
         }
         return dat;
     }
 
-    uint32_t DynamicCodeDataProvider::get32(uint32_t off) const {
+    uint32_t DynamicCodeDataProvider::get32(uint64_t off) const {
         uint32_t dat = 0;
         SIZE_T read_byte_count = 0;
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 4, &read_byte_count);
         if (ret == 0 || read_byte_count != 4) {
-            ubassert(false);
+            assert(false);
             return 0;
         }
         return dat;
@@ -80,7 +80,7 @@ namespace dexar {
         BOOL ret = ::ReadProcessMemory(
             process_, reinterpret_cast<LPCVOID>(base_ + off), &dat, 8, &read_byte_count);
         if (ret == 0 || read_byte_count != 8) {
-            ubassert(false);
+            assert(false);
             return 0;
         }
         return dat;

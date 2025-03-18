@@ -164,10 +164,10 @@ namespace dexar {
             std::stringstream addr_ss;
             addr_ss << std::hex << std::uppercase << std::setw(8) << std::setfill('0')
                 << (dbg_info.bp_addr + offset);
-            auto addr_str = utl::UTF8ToUTF16(addr_ss.str());
+            auto addr_str = utl::u8to16(addr_ss.str());
 
             if (parser.parse(csi, &info)) {
-                op_list_source_->addOpcode(addr_str, utl::UTF8ToUTF16(info.toString()));
+                op_list_source_->addOpcode(addr_str, utl::u8to16(info.toString()));
                 csi += info.length();
                 offset += info.length();
                 info.reset();
