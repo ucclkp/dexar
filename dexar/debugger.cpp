@@ -16,6 +16,11 @@
 #include "utils/message/message.h"
 #include "utils/numbers.hpp"
 
+#include "dexar/intel/intel_instruction.h"
+#include "dexar/intel/intel_instruction_parser.h"
+#include "dexar/intel/intel_opcode_map.h"
+#include "dexar/code_data_provider.h"
+
 
 namespace dexar {
 
@@ -343,12 +348,42 @@ namespace dexar {
             }
         }
 
+        image_base_addr_ = reinterpret_cast<intptr_t>(info.lpBaseOfImage);
         if (!hit) {
-            jour_e("Cannot find EP section: %s", image_file_name_);
-            return;
+            //jour_e("Cannot find EP section: %s", image_file_name_);
+            //return;
+
+            intel::Instruction iinfo;
+
+            intel::CodeSegment csi;
+            csi.provider = new DynamicCodeDataProvider(image_base_addr_, info.hProcess);
+            csi.cur = 0;
+            csi.size = 1000;
+            csi.env.cpu_mode = intel::CPUMode::_64Bit;
+            csi.env.d = true;
+
+            intel::InstructionParser parser;
+
+            uint32_t offset = 0;
+            for (int i = 0; i < 50; ++i) {
+                std::stringstream addr_ss;
+                addr_ss << std::hex << std::uppercase << std::setw(8) << std::setfill('0')
+                    << (0 + offset);
+                auto addr_str = addr_ss.str();
+
+                if (parser.parse(csi, &iinfo)) {
+                    auto s = addr_str + " " + iinfo.toString();
+                    csi += iinfo.length();
+                    offset += iinfo.length();
+                    iinfo.reset();
+                } else {
+                    break;
+                }
+            }
+
+            delete csi.provider;
         }
 
-        image_base_addr_ = reinterpret_cast<intptr_t>(info.lpBaseOfImage);
         setBreakpoint(opt.ep_addr + image_base_addr_);
     }
 
